@@ -1,0 +1,51 @@
+name: 🔄 Sync Fork with Upstream
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday at 03:00 UTC
+  workflow_dispatch:     # Manual trigger option
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout your fork
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📡 Add upstream remote
+        run: |
+          git remote add upstream https://github.com/n8n-io/n8n.git
+          git fetch upstream
+
+      - name: 🔀 Merge upstream into fork
+        run: |
+          git checkout -B sync-upstream
+          git merge upstream/master --allow-unrelated-histories --no-edit || true
+
+      - name: 🚀 Push branch to origin
+        run: |
+          git push origin sync-upstream --force
+
+      - name: 📬 Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Sync with upstream n8n'
+          title: '🔄 Sync: Merge latest from n8n-io/n8n'
+          body: 'This PR merges the latest changes from the upstream repo.'
+          base: main
+          branch: sync-upstream
+          delete-branch: true
+          draft: false
+
+      - name: 🤖 Auto-merge if PR created
+        if: steps.cpr.outputs.pull-request-number
+        uses: pascalgn/automerge-action@v0.15.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: squash
