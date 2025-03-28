@@ -26,6 +26,17 @@ jobs:
           git checkout -B sync-upstream
           git merge upstream/master --allow-unrelated-histories --no-edit || true
 
+     - name: 🧹 Clean up unwanted workflows
+        run: |
+          rm -f .github/workflows/benchmark-*.yml
+          rm -f .github/workflows/integration-*.yml
+          rm -f .github/workflows/e2e.yml
+          rm -f .github/workflows/test.yml
+          rm -f .github/workflows/build.yml
+          rm -f .github/workflows/deploy-docs.yml
+          rm -f .github/workflows/release.yml
+
+
       - name: 🚀 Push branch to origin
         run: |
           git push origin sync-upstream --force
