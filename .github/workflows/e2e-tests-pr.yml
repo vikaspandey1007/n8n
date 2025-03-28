@@ -1,8 +1,8 @@
 name: PR E2E
 
-on:
-  pull_request_review:
-    types: [submitted]
+#on:
+ # pull_request_review:
+  #  types: [submitted]
 
 concurrency:
   group: e2e-${{ github.event.pull_request.number || github.ref }}-${{github.event.review.state}}
