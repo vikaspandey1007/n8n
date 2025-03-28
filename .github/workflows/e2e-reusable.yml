@@ -1,12 +1,12 @@
 name: Reusable e2e workflow
 
-on:
-  workflow_call:
-    inputs:
-      branch:
-        description: 'GitHub branch to test.'
-        required: false
-        type: string
+#on:
+  #workflow_call:
+  #  inputs:
+    #  branch:
+     #   description: 'GitHub branch to test.'
+      #  required: false
+       # type: string
       user:
         description: 'User who kicked this off.'
         required: false
